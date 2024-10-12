@@ -42,6 +42,27 @@ public class Database {
         executor = JdbiExecutor.create(jdbi, executorService);
     }
 
+    public Database(String name, boolean defaultAsync, String host, String port, String username, String password) {
+        HikariConfig config = new HikariConfig();
+        config.setJdbcUrl("jdbc:mysql://" + host + ":" + port + "/" + name + "?useSSL=false&serverTimezone=UTC");
+        config.setUsername(username);
+        config.setPassword(password);
+        dataSource = new HikariDataSource(config);
+        jdbi = Jdbi.create(dataSource);
+        jdbi.installPlugin(new SqlObjectPlugin());
+        jdbi.installPlugin(new CaffeineCachePlugin());
+        ExecutorService executorService;
+        ThreadFactory threadFactory = new ThreadFactoryBuilder().setNameFormat("Database IO #%d").build();
+        if (defaultAsync) executorService = Executors.newScheduledThreadPool(8, threadFactory);
+        else executorService = new ThreadPoolExecutor(0, Runtime.getRuntime().availableProcessors() / 2,
+                60L, TimeUnit.SECONDS,
+                new LinkedBlockingQueue<>(),
+                threadFactory
+        );
+        executor = JdbiExecutor.create(jdbi, executorService);
+    }
+
+
     public void execute(boolean async, Consumer<DatabaseDao> consumer) {
         if (consumer == null) {
             throw new IllegalArgumentException("Consumer cannot be null");
