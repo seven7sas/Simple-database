@@ -4,6 +4,7 @@ import org.jdbi.v3.core.statement.StatementContext;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Objects;
 import java.util.UUID;
 
 public class MyObject {
@@ -28,8 +29,24 @@ public class MyObject {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MyObject myObject = (MyObject) o;
+        return Objects.equals(id, myObject.id) && Objects.equals(text, myObject.text);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, text);
+    }
+
+    @Override
     public String toString() {
-        return "id=" + id + "|text=" + text;
+        return "MyObject{" +
+                "id=" + id +
+                ", text='" + text + '\'' +
+                '}';
     }
 
     public static class RowMapper implements org.jdbi.v3.core.mapper.RowMapper<MyObject> {

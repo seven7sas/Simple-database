@@ -6,14 +6,13 @@ import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import ru.giga.dev.MyObject;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RegisterRowMapper(MyObject.RowMapper.class)
-public interface DatabaseDao {
+public interface Dao {
     @SqlUpdate("CREATE TABLE IF NOT EXISTS objects (id TEXT PRIMARY KEY, text TEXT)")
     void createTable();
 

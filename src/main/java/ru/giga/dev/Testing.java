@@ -4,6 +4,8 @@ import ru.giga.dev.database.Database;
 
 public class Testing {
     public static void main(String[] args) {
-        Database database = new Database("database", true);
+        Database database = new Database("database", 0);
     }
+
+
 }
